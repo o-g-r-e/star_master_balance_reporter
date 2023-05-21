@@ -14,6 +14,26 @@ public class PageController {
     @GetMapping("/")
     String homePage(Model model) {
         model.addAttribute("appName", appName);
-        return "home";
+        return "index";
+    }
+
+    @GetMapping("/workers")
+    String workersPage(Model model) {
+        return "workers";
+    }
+
+    @GetMapping("/items")
+    String itemsPage(Model model) {
+        return "items";
+    }
+
+    @GetMapping("/worktasks")
+    String worktasksPage(Model model) {
+        return "worktasks";
+    }
+
+    @GetMapping("/new_task")
+    String newtaskPage(Model model) {
+        return "new_task";
     }
 }

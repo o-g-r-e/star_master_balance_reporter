@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>Рабочие</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <h1>Рабочие</h1>
+    <button type="button" class="btn btn-primary mt-5">Сохранить</button>
+    <table id="work-table" class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Имя</th>
+        </tr>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+    </table>
+    <button id="add-worker" type="button" class="btn btn-light">Добавить рабочего</button>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+        crossorigin="anonymous"></script>
+<script>
+    let rows = 0;
+
+    function addRow() {
+
+        let tr = document.createElement("tr");
+        let rowTh = document.createElement("th");
+        rowTh.innerText = ++rows;
+        let workerTd = document.createElement("td");
+        workerTd.innerText = "Введите имя";
+        workerTd.setAttribute("contenteditable", "true");
+
+        tr.append(rowTh)
+        tr.append(workerTd)
+
+        $("#table-body").append(tr);
+    }
+
+    $("#add-worker").click(function() {
+        addRow();
+    });
+</script>
+</html>
