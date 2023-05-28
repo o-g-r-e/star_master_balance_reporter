@@ -10,7 +10,10 @@
     <form class="mt-3">
         <div class="row">
             <legend class="col-auto col-form-label" for="item-name">Название:</legend>
-            <div class="col-2"><input class="form-control" id="item-name" type="text" th:value="${currentItem.name}"></div>
+            <div class="col-2">
+                <input class="form-control" id="item-name" type="text" th:value="${currentItem.name}">
+                <div class="invalid-feedback">Необходимо ввести название детали</div>
+            </div>
             <div class="col-auto"><button id="save-button" type="button" class="btn btn-primary">Сохранить изменения</button></div>
         </div>
     </form>
@@ -42,6 +45,7 @@
         </tbody>
     </table>
     <button id="add-operation" type="button" class="btn btn-light">Добавить операцию</button>
+
     <div class="modal fade" id="newOperationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -51,12 +55,22 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <label for="newOperationNameInput" class="form-label">Название</label>
-                        <input type="text" class="form-control" id="newOperationNameInput" placeholder="">
-                        <label for="newNormInput" class="form-label">Норма выработки</label>
-                        <input type="number" class="form-control" id="newNormInput" placeholder="">
-                        <label for="newNormRateInput" class="form-label">Норма мин./шт.</label>
-                        <input type="text" class="form-control" id="newNormRateInput" placeholder="0.0" disabled>
+                        <div>
+                            <label for="newOperationNameInput" class="form-label">Название</label>
+                            <input type="text" class="form-control" id="newOperationNameInput" placeholder="">
+                            <div class="invalid-feedback">Необходимо ввести название операции</div>
+                        </div>
+
+                        <div>
+                            <label for="newNormInput" class="form-label">Норма выработки</label>
+                            <input type="number" class="form-control" id="newNormInput" placeholder="">
+                            <div class="invalid-feedback">Норма выработки должна быть числом больше нуля</div>
+                        </div>
+
+                        <div>
+                            <label for="newNormRateInput" class="form-label">Норма мин./шт.</label>
+                            <input type="text" class="form-control" id="newNormRateInput" placeholder="0.0" disabled>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -77,14 +91,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form novalidate>
                         <input type="hidden" class="operation-id-edit-modal">
-                        <label for="editOperationNameInput" class="form-label">Название</label>
-                        <input type="text" class="form-control" id="editOperationNameInput" placeholder="">
-                        <label for="editNormInput" class="form-label">Норма выработки</label>
-                        <input type="number" class="form-control" id="editNormInput" placeholder="">
-                        <label for="editNormRateInput" class="form-label">Норма мин./шт.</label>
-                        <input type="text" class="form-control" id="editNormRateInput" placeholder="0.0" disabled>
+                        <div>
+                            <label for="editOperationNameInput" class="form-label">Название</label>
+                            <input type="text" class="form-control" id="editOperationNameInput" placeholder="">
+                            <div class="invalid-feedback">Необходимо ввести название операции</div>
+                        </div>
+                        <div>
+                            <label for="editNormInput" class="form-label mt-3">Норма выработки</label>
+                            <input type="number" class="form-control" id="editNormInput" placeholder="">
+                            <div class="invalid-feedback">Норма выработки должна быть числом больше нуля</div>
+                        </div>
+                        <div>
+                            <label for="editNormRateInput" class="form-label mt-3">Норма мин./шт.</label>
+                            <input type="text" class="form-control" id="editNormRateInput" placeholder="0.0" disabled>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -147,8 +169,26 @@
     });
 
     $("#operation-save").click(function(){
-        sendJson("/save_operation", {name: $("#newOperationNameInput").val(),
-            workNorm: $("#newNormInput").val(),
+
+        let newOperationName = $("#newOperationNameInput").val().trim();
+        let newOperationNorm = parseInt($("#newNormInput").val());
+        let valid = true;
+
+        if(newOperationName.length <= 0) {
+            $("#newOperationModal #newOperationNameInput").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(isNaN(newOperationNorm) || newOperationNorm <= 0) {
+            $("#newOperationModal #newNormInput").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(!valid) return;
+
+        sendJson("/save_operation", {
+            name: newOperationName,
+            workNorm: newOperationNorm,
             itemsPerMinute: $("#newNormRateInput").val(),
             item: {
                 id: [[${currentItem.id}]],
@@ -156,12 +196,30 @@
             }});
     });
 
+    $("#newOperationNameInput").on("input", function(){
+        $("#newOperationModal #newOperationNameInput").removeClass("is-invalid");
+    });
+
     $("#newNormInput").on("input", function(){
-        $("#newNormRateInput").val((675 / $("#newNormInput").val()).toFixed(1));
+        $("#newOperationModal #newNormInput").removeClass("is-invalid");
+    });
+
+    $("#newNormInput").on("input", function(){
+        let workNorm = $("#newNormInput").val();
+        if(isNaN(workNorm)) {
+            $("#newNormRateInput").val('');
+            return;
+        }
+        $("#newNormRateInput").val((675 / workNorm).toFixed(1));
     });
 
     $("#editNormInput").on("input", function(){
-        $("#editNormRateInput").val((675 / $("#editNormInput").val()).toFixed(1));
+        let workNorm = $("#editNormInput").val();
+        if(isNaN(workNorm)) {
+            $("#editNormRateInput").val('');
+            return;
+        }
+        $("#editNormRateInput").val((675 / workNorm).toFixed(1));
     });
 
     $(".edit-operation").click(function(){
@@ -176,15 +234,41 @@
     });
 
     $("#operation-update").click(function(){
-        sendJson("/update_operation", {id: $('#editOperationModal .operation-id-edit-modal').val(),
-            name: $("#editOperationModal #editOperationNameInput").val(),
-            workNorm: $("#editOperationModal #editNormInput").val(),
+
+        let operationName = $("#editOperationModal #editOperationNameInput").val().trim();
+        let operationNorm = parseInt($("#editOperationModal #editNormInput").val());
+        let valid = true;
+
+        if(operationName.length <= 0) {
+            $("#editOperationModal #editOperationNameInput").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(isNaN(operationNorm) || operationNorm <= 0) {
+            $("#editOperationModal #editNormInput").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(!valid) return;
+
+        sendJson("/update_operation", {
+            id: $('#editOperationModal .operation-id-edit-modal').val(),
+            name: operationName,
+            workNorm: operationNorm,
             itemsPerMinute: $("#editOperationModal #editNormRateInput").val(),
             item: {
                 id: [[${currentItem.id}]],
                 name: "[[${currentItem.name}]]",
             }});
         $('#editOperationModal').modal('hide');
+    });
+
+    $("#editOperationNameInput").on("input", function(){
+        $("#editOperationModal #editOperationNameInput").removeClass("is-invalid");
+    });
+
+    $("#editNormInput").on("input", function(){
+        $("#editOperationModal #editNormInput").removeClass("is-invalid");
     });
 
     $(".remove-operation").click(function(){
@@ -199,9 +283,21 @@
     });
 
     $("#save-button").click(function(){
-        sendJson("/update_item", {id: [[${currentItem.id}]], name: $("#item-name").val()}, function(){
+
+        let newItemName = $("#item-name").val().trim();
+
+        if(newItemName.length <= 0) {
+            $("#item-name").addClass("is-invalid");
+            return;
+        }
+
+        sendJson("/update_item", {id: [[${currentItem.id}]], name: newItemName}, function(){
             $("#successUpdateModal").modal("show");
         });
+    });
+
+    $("#item-name").on("input", function(){
+        $("#item-name").removeClass("is-invalid");
     });
 
     function sendJson(url, data, onSuccess) {

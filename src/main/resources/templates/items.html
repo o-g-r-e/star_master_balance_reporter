@@ -41,6 +41,7 @@
                 <div class="modal-body">
                     <form>
                         <input type="text" class="form-control" id="newItemNameInput" placeholder="Название">
+                        <div class="invalid-feedback">Необходимо ввести название детали</div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -89,7 +90,19 @@
     });
 
     $("#item-save").click(function() {
-        sendJson("/save_item", {name: $("#newItemNameInput").val(), operations:[], workTasks: []});
+
+        let newItemName = $("#newItemNameInput").val().trim();
+
+        if(newItemName.length <= 0) {
+            $("#newItemModal #newItemNameInput").addClass("is-invalid");
+            return;
+        }
+
+        sendJson("/save_item", {name: newItemName, operations:[], workTasks: []});
+    });
+
+    $("#newItemNameInput").on("input", function(){
+        $("#newItemModal #newItemNameInput").removeClass("is-invalid");
     });
 
     $(".remove-item").click(function() {
@@ -102,10 +115,6 @@
 
     $("#item-warning-apply").click(function() {
         sendData("/remove_item", "id="+$('#delWarningModal .item-id-edit-modal').val());
-    });
-
-    $("#save-test-item").click(function(){
-        sendJson("/save_test_item", {name: "test_1", count: 222/*, operations:[{name: "aaa", workNorm: 3, itemsPerMinute: 2.0}]*/}, function(){});
     });
 
     function sendJson(url, data) {
