@@ -1,5 +1,6 @@
 package com.example.starmanufacture.starmanufacture.data.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -12,8 +13,9 @@ public class Worker {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
 
-    @OneToMany(mappedBy="worker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy="worker", fetch = FetchType.LAZY)
     @JsonManagedReference
+    @JsonIgnore
     private Set<WorkTaskEntry> workTaskEntry;
 
     @Column(nullable = false)

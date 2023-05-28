@@ -5,97 +5,99 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
-<div class="container">
-    <h1>Рабочие</h1>
-    <table id="work-table" class="table mb-3">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Имя</th>
-            <th scope="col">Действия</th>
-        </tr>
-        </thead>
-        <tbody id="table-body">
-        <th:block th:each="worker, iStat : ${workersList}">
-        <tr th:worker-id="${worker.id}">
-            <td>[[${iStat.index+1}]]</td>
-            <td class="worker-name">[[${worker.fullName}]]</td>
-            <td>
-                <span role="button" class="edit-worker bi bi-pencil fs-5"></span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <span role="button" class="remove-worker bi bi-trash fs-5"></span>
-            </td>
-        </tr>
-        </th:block>
-        </tbody>
-    </table>
-    <button id="add-worker" type="button" class="btn btn-light mb-3">Добавить рабочего</button>
-</div>
-<div class="modal fade" id="newWorkerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Создание</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <input type="text" class="form-control" id="newWorkerNameInput" placeholder="Имя">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button id="worker-save" type="button" class="btn btn-primary">
-                    <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
-                    <span>Применить</span></button>
+    <div class="container">
+        <h1>Рабочие</h1>
+        <table id="work-table" class="table mb-3">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Действия</th>
+            </tr>
+            </thead>
+            <tbody id="table-body">
+            <th:block th:each="worker, iStat : ${workersList}">
+            <tr th:worker-id="${worker.id}">
+                <td>[[${iStat.index+1}]]</td>
+                <td class="worker-name">[[${worker.fullName}]]</td>
+                <td>
+                    <span role="button" class="edit-worker bi bi-pencil fs-5"></span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span role="button" class="remove-worker bi bi-trash fs-5"></span>
+                </td>
+            </tr>
+            </th:block>
+            </tbody>
+        </table>
+        <button id="add-worker" type="button" class="btn btn-light mb-3">Добавить рабочего</button>
+    </div>
+    <div class="modal fade" id="newWorkerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Создание</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="text" class="form-control" id="newWorkerNameInput" placeholder="Имя">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="worker-save" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Применить</span></button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="editWorkerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" >Редактирование</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="editWorkerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Редактирование</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" class="worker-id-edit-modal">
+                        <input type="text" class="form-control" id="editWorkerNameInput" placeholder="Имя">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="worker-edit-apply" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Применить</span></button>
+                </div>
             </div>
-            <div class="modal-body">
-                <form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Предупреждение!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
                     <input type="hidden" class="worker-id-edit-modal">
-                    <input type="text" class="form-control" id="editWorkerNameInput" placeholder="Имя">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button id="worker-edit-apply" type="button" class="btn btn-primary">
-                    <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
-                    <span>Применить</span></button>
+                    Вы действительно хотите удалить рабочего "<span id="warning-worker-name"></span>" ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="worker-warning-apply" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Удалить</span></button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="delWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Предупреждение!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" class="worker-id-edit-modal">
-                Вы действительно хотите удалить рабочего "<span id="warning-worker-name"></span>" ?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button id="worker-warning-apply" type="button" class="btn btn-primary">
-                    <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
-                    <span>Удалить</span></button>
-            </div>
-        </div>
-    </div>
-</div>
+    <div th:replace="~{fragments/errorModal :: errorModalFragment}"></div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script
@@ -168,6 +170,9 @@
                 location.reload();
             },
             error: function(data){
+                let responseText = JSON.parse(data.responseText);
+                $("#errorModal .error-text").text("Status: "+responseText.status+", Error: "+responseText.error);
+                $("#errorModal").modal("show");
             }
         });
     }

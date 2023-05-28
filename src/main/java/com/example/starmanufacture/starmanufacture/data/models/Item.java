@@ -21,7 +21,7 @@ public class Item {
     @JsonIgnore
     private Set<Operation> operations;
 
-    @OneToMany(mappedBy="item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="item")
     @JsonManagedReference
     @JsonIgnore
     private Set<WorkTask> workTasks;
