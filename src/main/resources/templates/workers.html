@@ -31,6 +31,7 @@
         </table>
         <button id="add-worker" type="button" class="btn btn-light">Добавить рабочего</button>
     </div>
+
     <div class="modal fade" id="newWorkerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -41,6 +42,7 @@
                 <div class="modal-body">
                     <form>
                         <input type="text" class="form-control" id="newWorkerNameInput" placeholder="Имя">
+                        <div class="invalid-feedback empty-new-worker-name-message">Необходимо ввести имя</div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -64,6 +66,7 @@
                     <form>
                         <input type="hidden" class="worker-id-edit-modal">
                         <input type="text" class="form-control" id="editWorkerNameInput" placeholder="Имя">
+                        <div class="invalid-feedback empty-worker-name-message">Необходимо ввести имя</div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -112,12 +115,40 @@
     });
 
     $("#worker-save").click(function(){
+
+        let newWorkerFullName = $("#newWorkerNameInput").val().trim();
+
+        if(newWorkerFullName.length <= 0) {
+            $("#newWorkerModal .empty-new-worker-name-message").show();
+            $("#newWorkerModal #newWorkerNameInput").addClass("is-invalid");
+            return;
+        }
+
         sendJson("/save_worker", {fullName: $("#newWorkerNameInput").val()});
 
         $('#newWorkerModal').modal('hide');
     });
 
+    $("#newWorkerNameInput").on("input", function(){
+        $("#newWorkerModal .empty-new-worker-name-message").hide();
+        $("#newWorkerModal #newWorkerNameInput").removeClass("is-invalid");
+    });
+
+    $("#editWorkerNameInput").on("input", function(){
+        $("#editWorkerModal .empty-worker-name-message").hide();
+        $("#editWorkerModal #editWorkerNameInput").removeClass("is-invalid");
+    });
+
     $("#worker-edit-apply").click(function(){
+
+        let workerName = $("#editWorkerNameInput").val().trim();
+
+        if(workerName.length <= 0) {
+            $("#editWorkerModal .empty-worker-name-message").show();
+            $("#editWorkerModal #editWorkerNameInput").addClass("is-invalid");
+            return;
+        }
+
         sendJson("/update_worker", {id: $('#editWorkerModal .worker-id-edit-modal').val(), fullName: $("#editWorkerNameInput").val()});
 
         $('#editWorkerModal').modal('hide');
