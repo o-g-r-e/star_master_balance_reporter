@@ -7,7 +7,7 @@
 <body>
 <div class="container">
     <h1>Наряд-задание</h1>
-    <form>
+    <form class="mt-3">
         <div class="row">
             <legend class="col-auto col-form-label" for="task-number">Номер:</legend>
             <div class="col-2"><input class="form-control" id="task-number" type="text" th:value="${workTask.number}"></div>
@@ -18,7 +18,7 @@
             <div class="col-auto"><button id="save-button" type="button" class="btn btn-primary">Сохранить изменения</button></div>
         </div>
     </form>
-    <table id="work-table" class="table">
+    <table id="work-table" class="table mt-3">
         <thead>
         <tr>
             <th scope="col">#</th>
