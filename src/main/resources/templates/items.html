@@ -67,13 +67,15 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button id="item-warning-apply" type="button" class="btn btn-primary">
+                    <button id="item-warning-apply" type="button" class="btn btn-primary" data-bs-dismiss="modal">
                         <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
                         <span>Удалить</span></button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div th:replace="~{fragments/errorModal :: errorModalFragment}"></div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -135,6 +137,9 @@
                 location.reload();
             },
             error: function(data) {
+                let responseText = JSON.parse(data.responseText);
+                $("#errorModal .error-text").text("Status: "+responseText.status+", Error: "+responseText.error);
+                $("#errorModal").modal("show");
             }
         });
     }
