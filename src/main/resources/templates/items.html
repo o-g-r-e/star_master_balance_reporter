@@ -86,6 +86,7 @@
 <script>
     $("#add-item").click(function() {
         $('#newItemModal #newItemNameInput').val('');
+        $("#newItemModal #newItemNameInput").removeClass("is-invalid");
         $('#newItemModal').modal('show');
     });
 

@@ -111,6 +111,7 @@
 
     $("#add-worker").click(function() {
         $('#newWorkerModal #newWorkerNameInput').val('');
+        $("#newWorkerModal #newWorkerNameInput").removeClass("is-invalid");
         $('#newWorkerModal').modal('show');
     });
 
@@ -152,6 +153,7 @@
 
     $(".edit-worker").click(function(){
         $('#editWorkerModal #editWorkerNameInput').val('');
+        $("#editWorkerModal #editWorkerNameInput").removeClass("is-invalid");
         $('#editWorkerModal #editWorkerNameInput').val($(this).parent().parent().find(".worker-name")[0].innerText);
         $('#editWorkerModal .worker-id-edit-modal').val($(this).parent().parent().attr("worker-id"));
         $('#editWorkerModal').modal('show');

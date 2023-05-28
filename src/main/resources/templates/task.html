@@ -10,11 +10,22 @@
     <form class="mt-3">
         <div class="row">
             <legend class="col-auto col-form-label" for="task-number">Номер:</legend>
-            <div class="col-2"><input class="form-control" id="task-number" type="text" th:value="${workTask.number}"></div>
+            <div class="col-2">
+                <input class="form-control" id="task-number" type="text" th:value="${workTask.number}">
+                <div class="invalid-feedback">Необходимо ввести номер наряда</div>
+            </div>
+
             <legend class="col-auto col-form-label" for="task-date">Дата:</legend>
-            <div class="col-2"><input class="form-control" id="task-date" type="text" th:value="${workTask.date}"></div>
+            <div class="col-2">
+                <input class="form-control" id="task-date" type="text" th:value="${workTask.date}">
+                <div class="invalid-feedback">Дата должна быть в формате yyyy-mm-dd</div>
+            </div>
+
             <legend class="col-auto col-form-label" for="task-item">Деталь:</legend>
-            <div class="col-auto"><button id="select-item" type="button" class="btn btn-light" th:text="${workTask.item.name}">Выбрать деталь</button></div>
+            <div class="col-auto">
+                <button id="select-item" type="button" class="btn btn-light" th:text="${workTask.item.name}">Выбрать деталь</button>
+            </div>
+
             <div class="col-auto"><button id="save-button" type="button" class="btn btn-primary">Сохранить изменения</button></div>
         </div>
     </form>
@@ -123,22 +134,33 @@
                 </div>
                 <div class="modal-body">
                     <form>
-                        <label for="newOperationSelect" class="form-label">Операция:</label>
-                        <select id="newOperationSelect" class="form-select" aria-label="Default select example">
-                            <option selected>Выберите операцию</option>
-                            <option th:each="op : ${workTask.item.operations}" th:value="${op.id}" th:operation-id="${op.id}" th:operation-norm="${op.workNorm}" th:operation-ipm="${op.itemsPerMinute}">
-                                [[${op.name}]]
-                            </option>
-                        </select>
-                        <label for="newWorkerSelect" class="form-label">Рабочий:</label>
-                        <select id="newWorkerSelect" class="form-select" aria-label="Default select example">
-                            <option selected>Выберите Рабочего</option>
-                            <option th:each="worker : ${workersList}" th:worker-id="${worker.id}" th:value="${worker.id}">
-                                [[${worker.fullName}]]
-                            </option>
-                        </select>
-                        <label for="newItemsCountInput" class="form-label">Количество:</label>
-                        <input type="number" class="form-control" id="newItemsCountInput" placeholder="">
+                        <div>
+                            <label for="newOperationSelect" class="form-label">Операция:</label>
+                            <select id="newOperationSelect" class="form-select" aria-label="Default select example">
+                                <option value="0" selected>Выберите операцию</option>
+                                <option th:each="op : ${workTask.item.operations}" th:value="${op.id}" th:operation-id="${op.id}" th:operation-norm="${op.workNorm}" th:operation-ipm="${op.itemsPerMinute}">
+                                    [[${op.name}]]
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">Выберите операцию</div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="newWorkerSelect" class="form-label">Рабочий:</label>
+                            <select id="newWorkerSelect" class="form-select" aria-label="Default select example">
+                                <option value="0" selected>Выберите Рабочего</option>
+                                <option th:each="worker : ${workersList}" th:worker-id="${worker.id}" th:value="${worker.id}">
+                                    [[${worker.fullName}]]
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">Выберите рабочего</div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="newItemsCountInput" class="form-label">Количество:</label>
+                            <input type="number" class="form-control" id="newItemsCountInput" placeholder="">
+                            <div class="invalid-feedback">Количество дожно быть больше нуля</div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -161,22 +183,33 @@
                 <div class="modal-body">
                     <form>
                         <input type="hidden" id="editTaskEntryIdInput" >
-                        <label for="editOperationSelect" class="form-label">Операция:</label>
-                        <select id="editOperationSelect" class="form-select" aria-label="Default select example">
-                            <option selected>Выберите операцию</option>
-                            <option th:each="op : ${workTask.item.operations}" th:value="${op.id}" th:operation-id="${op.id}" th:operation-norm="${op.workNorm}" th:operation-ipm="${op.itemsPerMinute}">
-                                [[${op.name}]]
-                            </option>
-                        </select>
-                        <label for="editWorkerSelect" class="form-label">Рабочий:</label>
-                        <select id="editWorkerSelect" class="form-select" aria-label="Default select example">
-                            <option selected>Выберите Рабочего</option>
-                            <option th:each="worker : ${workersList}" th:worker-id="${worker.id}" th:value="${worker.id}">
-                                [[${worker.fullName}]]
-                            </option>
-                        </select>
-                        <label for="editItemsCountInput" class="form-label">Количество:</label>
-                        <input type="number" class="form-control" id="editItemsCountInput" placeholder="">
+                        <div>
+                            <label for="editOperationSelect" class="form-label">Операция:</label>
+                            <select id="editOperationSelect" class="form-select" aria-label="Default select example">
+                                <option selected>Выберите операцию</option>
+                                <option th:each="op : ${workTask.item.operations}" th:value="${op.id}" th:operation-id="${op.id}" th:operation-norm="${op.workNorm}" th:operation-ipm="${op.itemsPerMinute}">
+                                    [[${op.name}]]
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">Выберите операцию</div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="editWorkerSelect" class="form-label">Рабочий:</label>
+                            <select id="editWorkerSelect" class="form-select" aria-label="Default select example">
+                                <option selected>Выберите Рабочего</option>
+                                <option th:each="worker : ${workersList}" th:worker-id="${worker.id}" th:value="${worker.id}">
+                                    [[${worker.fullName}]]
+                                </option>
+                            </select>
+                            <div class="invalid-feedback">Выберите рабочего</div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="editItemsCountInput" class="form-label">Количество:</label>
+                            <input type="number" class="form-control" id="editItemsCountInput" placeholder="">
+                            <div class="invalid-feedback">Количество дожно быть больше нуля</div>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -326,6 +359,9 @@
     }
 
     $("#add-row").click(function() {
+        $("#newTaskEntryModal #newOperationSelect").removeClass("is-invalid");
+        $("#newTaskEntryModal #newWorkerSelect").removeClass("is-invalid");
+        $("#newTaskEntryModal #newItemsCountInput").removeClass("is-invalid");
         $("#newTaskEntryModal").modal("show");
     });
 
@@ -363,12 +399,46 @@
     });
 
     $("#task-entry-save").click(function(){
+
+        let operationId = parseInt($("#newOperationSelect").val());
+        let workerId = parseInt($("#newWorkerSelect").val());
+        let operationItemsCount = parseInt($("#newItemsCountInput").val());
+        let valid = true;
+
+        if(operationId == 0) {
+            $("#newTaskEntryModal #newOperationSelect").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(workerId == 0) {
+            $("#newTaskEntryModal #newWorkerSelect").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(isNaN(operationItemsCount) || operationItemsCount <= 0) {
+            $("#newItemsCountInput").addClass("is-invalid");
+        }
+
+        if(!valid) return;
+
         sendJson('/save_worktask_entry', {
             workTaskId: [[${workTask.id}]],
-            operationId: parseInt($("#newOperationSelect").val()),
-            workerId: parseInt($("#newWorkerSelect").val()),
-            operationItemsCount: parseInt($("#newItemsCountInput").val())
+            operationId,
+            workerId,
+            operationItemsCount
         });
+    });
+
+    $("#newOperationSelect").click(function(){
+        $("#newTaskEntryModal #newOperationSelect").removeClass("is-invalid");
+    });
+
+    $("#newWorkerSelect").click(function(){
+        $("#newTaskEntryModal #newWorkerSelect").removeClass("is-invalid");
+    });
+
+    $("#newItemsCountInput").on("input", function(){
+        $("#newTaskEntryModal #newItemsCountInput").removeClass("is-invalid");
     });
 
     $(".edit-wtEntry").click(function(){
@@ -377,6 +447,11 @@
         let operationId = $(row).find("td").get(1).getAttribute("opId");
         let workerId = $(row).find("td").get(2).getAttribute("wId");
         let itemsCount = $(row).find("td").get(5).innerText;
+
+        $("#editTaskEntryModal #editOperationSelect").removeClass("is-invalid");
+        $("#editTaskEntryModal #editWorkerSelect").removeClass("is-invalid");
+        $("#editTaskEntryModal #editItemsCountInput").removeClass("is-invalid");
+
         $("#editTaskEntryModal #editTaskEntryIdInput").val(workTaskEntryId);
         $("#editTaskEntryModal #editOperationSelect").val(operationId);
         $("#editTaskEntryModal #editWorkerSelect").val(workerId);
@@ -386,13 +461,47 @@
     });
 
     $("#task-entry-update").click(function(){
+
+        let operationId = parseInt($("#editOperationSelect").val());
+        let workerId = parseInt($("#editWorkerSelect").val());
+        let operationItemsCount = parseInt($("#editItemsCountInput").val());
+        let valid = true;
+
+        if(operationId == 0) {
+            $("#editTaskEntryModal #editOperationSelect").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(workerId == 0) {
+            $("#editTaskEntryModal #editWorkerSelect").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(isNaN(operationItemsCount) || operationItemsCount <= 0) {
+            $("#editItemsCountInput").addClass("is-invalid");
+        }
+
+        if(!valid) return;
+
         sendJson('/update_worktask_entry', {
             id: parseInt($("#editTaskEntryIdInput").val()),
             workTaskId: [[${workTask.id}]],
-            operationId: parseInt($("#editOperationSelect").val()),
-            workerId: parseInt($("#editWorkerSelect").val()),
-            operationItemsCount: parseInt($("#editItemsCountInput").val())
+            operationId,
+            workerId,
+            operationItemsCount
         });
+    });
+
+    $("#editOperationSelect").click(function(){
+        $("#editTaskEntryModal #editOperationSelect").removeClass("is-invalid");
+    });
+
+    $("#editWorkerSelect").click(function(){
+        $("#editTaskEntryModal #editWorkerSelect").removeClass("is-invalid");
+    });
+
+    $("#editItemsCountInput").on("input", function(){
+        $("#editTaskEntryModal #editItemsCountInput").removeClass("is-invalid");
     });
 
     $(".remove-wtEntry").click(function(){
@@ -404,14 +513,45 @@
         sendData("/delete_worktask_entry", "id="+$('#delWarningModal #workTaskEntryDeleteIdInput').val());
     });
 
+    function dateValidate(date) {
+        let dateRegEx = /^\d{4}\-(0[0-9]|1[12])\-(0[0-9]|1[0-9]|2[0-9]|3[01])$/;
+
+        return dateRegEx.test(date);
+    }
+
     $("#save-button").click(function(){
+
+        let taskNumber = $("#task-number").val().trim();
+        let taskDate = $("#task-date").val().trim();
+        let valid = true;
+
+        if(taskNumber.length <= 0) {
+            $("#task-number").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(!dateValidate(taskDate)) {
+            $("#task-date").addClass("is-invalid");
+            valid = false;
+        }
+
+        if(!valid) return;
+
         sendJson('/update_worktask', {
             id: [[${workTask.id}]],
-            number: $("#task-number").val(),
-            date: $("#task-date").val()
+            number: taskNumber,
+            date: taskDate
         }, function(){
             $("#successUpdateModal").modal("show");
         });
+    });
+
+    $("#task-number").on("input", function(){
+        $("#task-number").removeClass("is-invalid");
+    });
+
+    $("#task-date").on("input", function(){
+        $("#task-date").removeClass("is-invalid");
     });
 
     function sendJson(url, data, onSuccess) {

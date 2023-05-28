@@ -61,13 +61,13 @@
                             <div class="invalid-feedback">Необходимо ввести название операции</div>
                         </div>
 
-                        <div>
+                        <div class="mt-3">
                             <label for="newNormInput" class="form-label">Норма выработки</label>
                             <input type="number" class="form-control" id="newNormInput" placeholder="">
                             <div class="invalid-feedback">Норма выработки должна быть числом больше нуля</div>
                         </div>
 
-                        <div>
+                        <div class="mt-3">
                             <label for="newNormRateInput" class="form-label">Норма мин./шт.</label>
                             <input type="text" class="form-control" id="newNormRateInput" placeholder="0.0" disabled>
                         </div>
@@ -98,13 +98,13 @@
                             <input type="text" class="form-control" id="editOperationNameInput" placeholder="">
                             <div class="invalid-feedback">Необходимо ввести название операции</div>
                         </div>
-                        <div>
-                            <label for="editNormInput" class="form-label mt-3">Норма выработки</label>
+                        <div class="mt-3">
+                            <label for="editNormInput" class="form-label">Норма выработки</label>
                             <input type="number" class="form-control" id="editNormInput" placeholder="">
                             <div class="invalid-feedback">Норма выработки должна быть числом больше нуля</div>
                         </div>
-                        <div>
-                            <label for="editNormRateInput" class="form-label mt-3">Норма мин./шт.</label>
+                        <div class="mt-3">
+                            <label for="editNormRateInput" class="form-label">Норма мин./шт.</label>
                             <input type="text" class="form-control" id="editNormRateInput" placeholder="0.0" disabled>
                         </div>
                     </form>
@@ -165,6 +165,8 @@
         crossorigin="anonymous"></script>
 <script>
     $("#add-operation").click(function(){
+        $("#newOperationModal #newOperationNameInput").removeClass("is-invalid");
+        $("#newOperationModal #newNormInput").removeClass("is-invalid");
         $('#newOperationModal').modal('show');
     });
 
@@ -226,6 +228,8 @@
         $('#editOperationModal #editOperationNameInput').val('');
         $('#editOperationModal #editNormInput').val('');
         $('#editOperationModal #editNormRateInput').val('');
+        $("#editOperationModal #editOperationNameInput").removeClass("is-invalid");
+        $("#editOperationModal #editNormInput").removeClass("is-invalid");
         $('#editOperationModal #editOperationNameInput').val($(this).parent().parent().find(".operation-name")[0].innerText);
         $('#editOperationModal #editNormInput').val($(this).parent().parent().find(".operation-norm")[0].innerText);
         $('#editOperationModal #editNormRateInput').val($(this).parent().parent().find(".operation-ipm")[0].innerText);
