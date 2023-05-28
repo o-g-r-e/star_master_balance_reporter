@@ -25,4 +25,8 @@ public class WorkTaskService {
     public WorkTask getTaskById(Integer id) {
         return workTaskRepository.findById(id).get();
     }
+
+    public void deleteWorkTaskById(Integer id) {
+        workTaskRepository.deleteById(id);
+    }
 }

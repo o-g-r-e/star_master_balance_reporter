@@ -19,7 +19,7 @@
         </thead>
         <tbody id="table-body">
         <th:block th:each="task, iStat : ${workTasks}">
-            <tr th:item-id="${task.id}">
+            <tr th:task-id="${task.id}">
                 <td>[[${iStat.index+1}]]</td>
                 <td class="task-number">[[${task.number}]]</td>
                 <td class="task-Date">[[${task.date}]]</td>
@@ -65,6 +65,28 @@
         </div>
     </div>
 
+    <div class="modal fade" id="delWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Предупреждение!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="task-id-to-del">
+                    Вы действительно хотите удалить Наряд-задание "<span class="worktask-del-number"></span>" ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="worktask-del-apply" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Удалить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/errorModal :: errorModalFragment}"></div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -87,6 +109,16 @@
         $("#newTaskModal").modal("hide");
     });
 
+    $(".remove-task").click(function(){
+        $('#delWarningModal .worktask-del-number').text($(this).parent().parent().find(".task-number")[0].innerText);
+        $('#delWarningModal .task-id-to-del').val($(this).parent().parent().attr("task-id"));
+        $('#delWarningModal').modal('show');
+    });
+
+    $("#worktask-del-apply").click(function(){
+        sendData("/delete_worktask", "id="+$('#delWarningModal .task-id-to-del').val());
+    });
+
     function sendJson(url, data) {
         $.ajax({
             url: url,
@@ -102,6 +134,23 @@
             },
             error: function(data){
                 console.log(data)
+            }
+        });
+    }
+
+    function sendData(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'text',
+            data: data,
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                let responseText = JSON.parse(data.responseText);
+                $("#errorModal .error-text").text("Status: "+responseText.status+", Error: "+responseText.error);
+                $("#errorModal").modal("show");
             }
         });
     }

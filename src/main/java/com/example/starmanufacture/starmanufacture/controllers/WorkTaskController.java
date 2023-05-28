@@ -104,4 +104,12 @@ public class WorkTaskController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping(path="/delete_worktask")
+    @ResponseBody
+    ResponseEntity<WorkTaskEntry> deleteWorkTask(@RequestParam Integer id) {
+        workTaskService.deleteWorkTaskById(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
