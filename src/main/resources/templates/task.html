@@ -1,0 +1,479 @@
+<html>
+<head>
+    <title>Наряд-задание № ###-###</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="container">
+    <h1>Наряд-задание</h1>
+    <form>
+        <div class="row">
+            <legend class="col-auto col-form-label" for="task-number">Номер:</legend>
+            <div class="col-2"><input class="form-control" id="task-number" type="text" th:value="${workTask.number}"></div>
+            <legend class="col-auto col-form-label" for="task-date">Дата:</legend>
+            <div class="col-2"><input class="form-control" id="task-date" type="text" th:value="${workTask.date}"></div>
+            <legend class="col-auto col-form-label" for="task-item">Деталь:</legend>
+            <div class="col-auto"><button id="select-item" type="button" class="btn btn-light" th:text="${workTask.item.name}">Выбрать деталь</button></div>
+            <div class="col-auto"><button id="save-button" type="button" class="btn btn-primary">Сохранить изменения</button></div>
+        </div>
+    </form>
+    <table id="work-table" class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Операция</th>
+            <th scope="col">Рабочий</th>
+            <th scope="col">Норма выработки шт. 11.25 ч/см</th>
+            <th scope="col">Норма мин./шт.</th>
+            <th scope="col">Изготовлено</th>
+            <th scope="col">Калькуляция времени</th>
+            <th scope="col">Действия</th>
+        </tr>
+        </thead>
+        <tbody id="table-body">
+        <th:block th:each="wtEntry, iStat : ${#lists.sort(workTask.workTaskEntryes, byId)}">
+            <tr th:wtEntryId="${wtEntry.id}">
+                <td>[[${iStat.index+1}]]</td>
+                <td class="wtEntry-operation" th:opId="${wtEntry.operation.id}">[[${wtEntry.operation.name}]]</td>
+                <td class="wtEntry-workerName" th:wId="${wtEntry.worker.id}">[[${wtEntry.worker.fullName}]]</td>
+                <td class="wtEntry-opNorm">[[${wtEntry.operation.workNorm}]]</td>
+                <td class="wtEntry-opItemsPerMinute">[[${wtEntry.operation.itemsPerMinute}]]</td>
+                <td class="wtEntry-opItemsCount">[[${wtEntry.operationItemsCount}]]</td>
+                <td class="wtEntry-opItemsTime">[[${#numbers.formatDecimal(wtEntry.operationItemsCount * wtEntry.operation.itemsPerMinute, 0, 1, 'POINT')}]]</td>
+                <td>
+                    <span role="button" class="edit-wtEntry bi bi-pencil fs-5"></span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span role="button" class="remove-wtEntry bi bi-trash fs-5"></span>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <th>Всего изготовлено: <span id="total-items"></span></th>
+                <th>Всего времени: <span id="total-time"></span></th>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+    <button id="add-row" type="button" class="btn btn-light">Добавить строку</button>
+    <button id="add-all-operations" type="button" class="btn btn-light" disabled>Добавить все операции</button><br>
+
+
+    <div class="modal fade" id="itemsModal" tabindex="-1" aria-labelledby="itemsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Выберите деталь</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div th:each="item : ${itemsList}">
+                        <a th:item-id="${item.id}" class="item" href="#">[[${item.name}]]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="operationsModal" tabindex="-1" aria-labelledby="operationsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Выберите операцию</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div th:each="op : ${workTask.item.operations}">
+                        <a th:operation-id="${op.id}" th:operation-norm="${op.workNorm}" th:operation-ipm="${op.itemsPerMinute}" class="operation" href="#">[[${op.name}]]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="workersModal" tabindex="-1" aria-labelledby="workersModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Выберите рабочего</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div th:each="worker : ${workersList}">
+                        <a th:item-id="${worker.id}" class="worker" href="#">[[${worker.fullName}]]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="newTaskEntryModal" tabindex="-1" aria-labelledby="newTaskEntryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Новая запись</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="newOperationSelect" class="form-label">Операция:</label>
+                        <select id="newOperationSelect" class="form-select" aria-label="Default select example">
+                            <option selected>Выберите операцию</option>
+                            <option th:each="op : ${workTask.item.operations}" th:value="${op.id}" th:operation-id="${op.id}" th:operation-norm="${op.workNorm}" th:operation-ipm="${op.itemsPerMinute}">
+                                [[${op.name}]]
+                            </option>
+                        </select>
+                        <label for="newWorkerSelect" class="form-label">Рабочий:</label>
+                        <select id="newWorkerSelect" class="form-select" aria-label="Default select example">
+                            <option selected>Выберите Рабочего</option>
+                            <option th:each="worker : ${workersList}" th:worker-id="${worker.id}" th:value="${worker.id}">
+                                [[${worker.fullName}]]
+                            </option>
+                        </select>
+                        <label for="newItemsCountInput" class="form-label">Количество:</label>
+                        <input type="number" class="form-control" id="newItemsCountInput" placeholder="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="task-entry-save" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Сохранить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editTaskEntryModal" tabindex="-1" aria-labelledby="editTaskEntryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактирование записи</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" id="editTaskEntryIdInput" >
+                        <label for="editOperationSelect" class="form-label">Операция:</label>
+                        <select id="editOperationSelect" class="form-select" aria-label="Default select example">
+                            <option selected>Выберите операцию</option>
+                            <option th:each="op : ${workTask.item.operations}" th:value="${op.id}" th:operation-id="${op.id}" th:operation-norm="${op.workNorm}" th:operation-ipm="${op.itemsPerMinute}">
+                                [[${op.name}]]
+                            </option>
+                        </select>
+                        <label for="editWorkerSelect" class="form-label">Рабочий:</label>
+                        <select id="editWorkerSelect" class="form-select" aria-label="Default select example">
+                            <option selected>Выберите Рабочего</option>
+                            <option th:each="worker : ${workersList}" th:worker-id="${worker.id}" th:value="${worker.id}">
+                                [[${worker.fullName}]]
+                            </option>
+                        </select>
+                        <label for="editItemsCountInput" class="form-label">Количество:</label>
+                        <input type="number" class="form-control" id="editItemsCountInput" placeholder="">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="task-entry-update" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Сохранить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Предупреждение!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="workTaskEntryDeleteIdInput">
+                    Вы действительно хотите удалить запись ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="deleteWarningApply" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Удалить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successUpdateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Успешно!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Изменения успешно сохранены!</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ок</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+        crossorigin="anonymous"></script>
+<script>
+
+    let workers = ["Wade", "Dave", "Seth", "Ivan", "Riley"];
+    let workDayMinutes = 675;
+    let operations = [
+        {name: "Battere", workNorm: 100, itemPerMinutes: workDayMinutes/100},
+        {name: "Lerytud", workNorm: 350, itemPerMinutes: workDayMinutes/350},
+        {name: "Renerty", workNorm: 480, itemPerMinutes: workDayMinutes/480},
+        {name: "Vertiny", workNorm: 500, itemPerMinutes: workDayMinutes/500},
+        {name: "Menarize", workNorm: 600, itemPerMinutes: workDayMinutes/600}
+    ];
+    let selectedTd;
+    let rows = 0;
+
+    function addRow() {
+
+        let tr = document.createElement("tr");
+        let rowTh = document.createElement("th");
+        rowTh.innerText = ++rows;
+        let operationTd = document.createElement("td");
+        operationTd.innerText = "Выберите операцию";
+        let workerTd = document.createElement("td");
+        workerTd.innerText = "Выберите рабочего";
+        let opWorkNormTd = document.createElement("td");
+        opWorkNormTd.classList.add("work-norm");
+        opWorkNormTd.innerText = "0";
+        let opItemsPerMinutesTd = document.createElement("td");
+        opItemsPerMinutesTd.classList.add("op-ipm");
+        opItemsPerMinutesTd.innerText = "0";
+        let itemsTd = document.createElement("td");
+        itemsTd.classList.add("op-items");
+        itemsTd.setAttribute("contenteditable", "true");
+        let timeTd = document.createElement("td");
+        timeTd.classList.add("op-calc-time");
+
+        tr.append(rowTh)
+        tr.append(operationTd)
+        tr.append(workerTd)
+        tr.append(opWorkNormTd)
+        tr.append(opItemsPerMinutesTd)
+        tr.append(itemsTd)
+        tr.append(timeTd)
+        tr.append($('<td><span role="button" class="remove-task bi bi-trash fs-5"></span></td>')[0])
+
+        $(workerTd).click(function (e) {
+            selectedTd = e.target;
+            /*$(".modal-body").first().html("");
+            workers.forEach(function (value, index) {
+                $(".modal-body").first().append(`<div><a class="modal-select" data-bs-dismiss="modal" href="#">${value}</a></div>`);
+                $(".modal-select").click(function (e) {
+                    workerTd.innerText = e.target.innerText;
+                });
+            })
+            $("#exampleModalLabel").text("Выберите рабочего");
+            $('#exampleModal').modal('show');*/
+            $('#workersModal').modal('show');
+        });
+
+        $(operationTd).click(function (e) {
+            selectedTd = e.target;
+            /*$(".modal-body").first().html("");
+            operations.forEach(function (operation, index) {
+                $(".modal-body").first().append(`<div><a work-norm="${operation.workNorm}" items-per-minutes="${operation.itemPerMinutes.toFixed(1)}" class="modal-select" data-bs-dismiss="modal" href="#">${operation.name}</a></div>`);
+                $(".modal-select").click(function (e) {
+                    operationTd.innerText = e.target.innerText;
+                    $(opWorkNormTd).text(e.target.getAttribute("work-norm"));
+                    $(opItemsPerMinutesTd).text(e.target.getAttribute("items-per-minutes"));
+
+                    if(isNumeric(itemsTd.innerText)) {
+                        computeWorkTime();
+                    }
+                });
+            })
+            $("#exampleModalLabel").text("Выберите операцию");*/
+            $('#operationsModal').modal('show');
+        });
+
+        function computeWorkTime() {
+            let itemsPerMinutes = parseFloat(opItemsPerMinutesTd.innerText);
+            let items = parseInt(itemsTd.innerText);
+            if(isNaN(items)) items = 0;
+            $(timeTd).text((itemsPerMinutes*items).toFixed(1));
+            computeTotals();
+        }
+
+        itemsTd.addEventListener("input", function(e){
+            if(isNumeric(itemsTd.innerText)) {
+                computeWorkTime();
+            }
+        })
+
+        $("#table-body").append(tr);
+    }
+
+    $("#add-row").click(function() {
+        $("#newTaskEntryModal").modal("show");
+    });
+
+    function isNumeric(value) {
+        return /^[\-\+]?\d+\.?\d*$/.test(value);
+    }
+
+    function computeTotals() {
+        let totalItems = 0;
+        let totalTime = 0;
+        $("#table-body tr").each(function(index) {
+            let items = $(this).find(".wtEntry-opItemsCount").text();
+            let time = $(this).find(".wtEntry-opItemsTime").text();
+            if(isNumeric(items)) totalItems += parseInt(items);
+            if(isNumeric(time)) totalTime += parseFloat(time);
+        });
+        totalTime = totalTime.toFixed(1);
+        let timeBalance = totalTime - workDayMinutes;
+        timeBalance = timeBalance.toFixed(1);
+        $("#total-items").text(totalItems);
+        $("#total-time").text(totalTime+' ('+(timeBalance>0?'+'+timeBalance:timeBalance)+')');
+    }
+    computeTotals();
+
+    $(".operation").click(function(){
+        $(selectedTd).text($(this).text());
+        $(selectedTd.parentNode).find(".work-norm").text($(this).attr("operation-norm"));
+        $(selectedTd.parentNode).find(".op-ipm").text($(this).attr("operation-ipm"));
+        $("#operationsModal").modal("hide");
+    });
+
+    $(".worker").click(function(){
+        $(selectedTd).text($(this).text());
+        $("#workersModal").modal("hide");
+    });
+
+    $("#task-entry-save").click(function(){
+        sendJson('/save_worktask_entry', {
+            workTaskId: [[${workTask.id}]],
+            operationId: parseInt($("#newOperationSelect").val()),
+            workerId: parseInt($("#newWorkerSelect").val()),
+            operationItemsCount: parseInt($("#newItemsCountInput").val())
+        });
+    });
+
+    $(".edit-wtEntry").click(function(){
+        let row = $(this).parent().parent();
+        let workTaskEntryId = $(row).attr("wtEntryId");
+        let operationId = $(row).find("td").get(1).getAttribute("opId");
+        let workerId = $(row).find("td").get(2).getAttribute("wId");
+        let itemsCount = $(row).find("td").get(5).innerText;
+        $("#editTaskEntryModal #editTaskEntryIdInput").val(workTaskEntryId);
+        $("#editTaskEntryModal #editOperationSelect").val(operationId);
+        $("#editTaskEntryModal #editWorkerSelect").val(workerId);
+        $("#editTaskEntryModal #editItemsCountInput").val(itemsCount);
+
+        $("#editTaskEntryModal").modal("show");
+    });
+
+    $("#task-entry-update").click(function(){
+        sendJson('/update_worktask_entry', {
+            id: parseInt($("#editTaskEntryIdInput").val()),
+            workTaskId: [[${workTask.id}]],
+            operationId: parseInt($("#editOperationSelect").val()),
+            workerId: parseInt($("#editWorkerSelect").val()),
+            operationItemsCount: parseInt($("#editItemsCountInput").val())
+        });
+    });
+
+    $(".remove-wtEntry").click(function(){
+        $('#delWarningModal #workTaskEntryDeleteIdInput').val($(this).parent().parent().attr("wtEntryId"));
+        $('#delWarningModal').modal('show');
+    });
+
+    $("#deleteWarningApply").click(function(){
+        sendData("/delete_worktask_entry", "id="+$('#delWarningModal #workTaskEntryDeleteIdInput').val());
+    });
+
+    $("#save-button").click(function(){
+        sendJson('/update_worktask', {
+            id: [[${workTask.id}]],
+            number: $("#task-number").val(),
+            date: $("#task-date").val()
+        }, function(){
+            $("#successUpdateModal").modal("show");
+        });
+    });
+
+    function sendJson(url, data, onSuccess) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify(data),
+            headers: {
+                //"Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+            },
+            complete: function(data){
+                onSuccess();
+            }
+        });
+    }
+
+    function sendData(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'text',
+            data: data,
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+            }
+        });
+    }
+
+    /*function fetchOperations(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            success: function(data){
+                data.operations.forEach(function (operation, index) {
+                    $("#operationsModal .modal-body").first().append(`<div><a work-norm="${operation.workNorm}" items-per-minutes="${operation.itemsPerMinute}" class="op-select" href="#">${operation.name}</a></div>`);
+                    $("#operationsModal .op-select").click(function (e) {
+                        selectedTd.innerText = e.target.innerText;
+                        $(selectedTd.parentNode).find(".work-norm").text(e.target.getAttribute("work-norm"));
+                        $(selectedTd.parentNode).find(".op-ipm").text(e.target.getAttribute("items-per-minutes"));
+
+                        $("#operationsModal").modal("hide");
+                    });
+                })
+            },
+            error: function(data){
+            }
+        });
+    }*/
+
+</script>
+</html>

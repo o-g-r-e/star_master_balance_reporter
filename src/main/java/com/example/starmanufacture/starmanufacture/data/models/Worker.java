@@ -1,13 +1,20 @@
-package com.example.starmanufacture.starmanufacture.models;
+package com.example.starmanufacture.starmanufacture.data.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.Set;
 
 @Entity
 @Table(name="workers")
 public class Worker {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;
+
+    @OneToMany(mappedBy="worker", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private Set<WorkTaskEntry> workTaskEntry;
 
     @Column(nullable = false)
     private String fullName;

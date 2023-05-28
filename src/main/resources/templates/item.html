@@ -1,0 +1,256 @@
+<html>
+<head>
+    <title>Наряд-задание № ###-###</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="container">
+    <h1>Деталь</h1>
+    <form class="mt-3">
+        <div class="row">
+            <legend class="col-auto col-form-label" for="item-name">Название:</legend>
+            <div class="col-2"><input class="form-control" id="item-name" type="text" th:value="${currentItem.name}"></div>
+            <div class="col-auto"><button id="save-button" type="button" class="btn btn-primary">Сохранить изменения</button></div>
+        </div>
+    </form>
+    <h3 class="mt-3">Операции</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Название</th>
+            <th scope="col">Норма</th>
+            <th scope="col">мин./шт.</th>
+            <th scope="col">Действия</th>
+        </tr>
+        </thead>
+        <tbody id="table-body">
+        <th:block th:each="op, iStat : ${#lists.sort(currentItem.operations, byOpId)}">
+            <tr th:operation-id="${op.id}">
+                <td>[[${iStat.index+1}]]</td>
+                <td class="operation-name">[[${op.name}]]</td>
+                <td class="operation-norm">[[${op.workNorm}]]</td>
+                <td class="operation-ipm">[[${op.itemsPerMinute}]]</td>
+                <td>
+                    <span role="button" class="edit-operation bi bi-pencil fs-5"></span>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span role="button" class="remove-operation bi bi-trash fs-5"></span>
+                </td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <button id="add-operation" type="button" class="btn btn-light">Добавить операцию</button>
+    <div class="modal fade" id="newOperationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Новая операция</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="newOperationNameInput" class="form-label">Название</label>
+                        <input type="text" class="form-control" id="newOperationNameInput" placeholder="">
+                        <label for="newNormInput" class="form-label">Норма выработки</label>
+                        <input type="number" class="form-control" id="newNormInput" placeholder="">
+                        <label for="newNormRateInput" class="form-label">Норма мин./шт.</label>
+                        <input type="text" class="form-control" id="newNormRateInput" placeholder="0.0" disabled>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="operation-save" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Применить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editOperationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактирование</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="hidden" class="operation-id-edit-modal">
+                        <label for="editOperationNameInput" class="form-label">Название</label>
+                        <input type="text" class="form-control" id="editOperationNameInput" placeholder="">
+                        <label for="editNormInput" class="form-label">Норма выработки</label>
+                        <input type="number" class="form-control" id="editNormInput" placeholder="">
+                        <label for="editNormRateInput" class="form-label">Норма мин./шт.</label>
+                        <input type="text" class="form-control" id="editNormRateInput" placeholder="0.0" disabled>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="operation-update" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Применить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Предупреждение!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="operation-id-edit-modal">
+                    Вы действительно хотите удалить операцию "<span id="warning-operation-name"></span>" ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="operation-warning-apply" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Удалить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="successUpdateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Успешно!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Изменения успешно сохранены!</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ок</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="errorModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ошибка!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body error-text"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ок</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+        crossorigin="anonymous"></script>
+<script>
+    $("#add-operation").click(function(){
+        $('#newOperationModal').modal('show');
+    });
+
+    $("#operation-save").click(function(){
+        sendJson("/save_operation", {name: $("#newOperationNameInput").val(),
+            workNorm: $("#newNormInput").val(),
+            itemsPerMinute: $("#newNormRateInput").val(),
+            item: {
+                id: [[${currentItem.id}]],
+                name: "[[${currentItem.name}]]",
+            }});
+    });
+
+    $("#newNormInput").on("input", function(){
+        $("#newNormRateInput").val((675 / $("#newNormInput").val()).toFixed(1));
+    });
+
+    $("#editNormInput").on("input", function(){
+        $("#editNormRateInput").val((675 / $("#editNormInput").val()).toFixed(1));
+    });
+
+    $(".edit-operation").click(function(){
+        $('#editOperationModal #editOperationNameInput').val('');
+        $('#editOperationModal #editNormInput').val('');
+        $('#editOperationModal #editNormRateInput').val('');
+        $('#editOperationModal #editOperationNameInput').val($(this).parent().parent().find(".operation-name")[0].innerText);
+        $('#editOperationModal #editNormInput').val($(this).parent().parent().find(".operation-norm")[0].innerText);
+        $('#editOperationModal #editNormRateInput').val($(this).parent().parent().find(".operation-ipm")[0].innerText);
+        $('#editOperationModal .operation-id-edit-modal').val($(this).parent().parent().attr("operation-id"));
+        $('#editOperationModal').modal('show');
+    });
+
+    $("#operation-update").click(function(){
+        sendJson("/update_operation", {id: $('#editOperationModal .operation-id-edit-modal').val(),
+            name: $("#editOperationModal #editOperationNameInput").val(),
+            workNorm: $("#editOperationModal #editNormInput").val(),
+            itemsPerMinute: $("#editOperationModal #editNormRateInput").val(),
+            item: {
+                id: [[${currentItem.id}]],
+                name: "[[${currentItem.name}]]",
+            }});
+        $('#editOperationModal').modal('hide');
+    });
+
+    $(".remove-operation").click(function(){
+        $('#delWarningModal #warning-operation-name').text('');
+        $('#delWarningModal #warning-operation-name').text($(this).parent().parent().find(".operation-name")[0].innerText);
+        $('#delWarningModal .operation-id-edit-modal').val($(this).parent().parent().attr("operation-id"));
+        $('#delWarningModal').modal('show');
+    });
+
+    $("#operation-warning-apply").click(function(){
+        sendData("/remove_operation", "id="+$('#delWarningModal .operation-id-edit-modal').val());
+    });
+
+    $("#save-button").click(function(){
+        sendJson("/update_item", {id: [[${currentItem.id}]], name: $("#item-name").val()}, function(){
+            $("#successUpdateModal").modal("show");
+        });
+    });
+
+    function sendJson(url, data, onSuccess) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify(data),
+            headers: {
+                //"Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+            },
+            complete: function(){
+                onSuccess();
+            }
+        });
+    }
+
+    function sendData(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'text',
+            data: data,
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                console.log(data)
+            }
+        });
+    }
+</script>
+</html>

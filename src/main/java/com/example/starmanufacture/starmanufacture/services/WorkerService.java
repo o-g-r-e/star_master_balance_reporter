@@ -1,6 +1,6 @@
 package com.example.starmanufacture.starmanufacture.services;
 
-import com.example.starmanufacture.starmanufacture.models.Worker;
+import com.example.starmanufacture.starmanufacture.data.models.Worker;
 import com.example.starmanufacture.starmanufacture.repositories.WorkerRepository;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +34,9 @@ public class WorkerService {
 
     public List<Worker> getAllWorkers() {
         return workerRepository.findAllByOrderByIdAsc();
+    }
+
+    public Worker getWorkerById(Integer id) {
+        return workerRepository.findById(id).get();
     }
 }

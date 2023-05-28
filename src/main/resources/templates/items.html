@@ -2,22 +2,78 @@
 <head>
     <title>Детали</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
 <div class="container">
     <h1>Детали</h1>
-    <button type="button" class="btn btn-primary mt-5">Сохранить</button>
     <table id="work-table" class="table">
         <thead>
         <tr>
             <th scope="col">#</th>
             <th scope="col">Название</th>
+            <th scope="col">Действия</th>
         </tr>
         </thead>
         <tbody id="table-body">
+        <th:block th:each="item, iStat : ${itemsList}">
+            <tr th:item-id="${item.id}">
+                <td>[[${iStat.index+1}]]</td>
+                <td class="item-name">[[${item.name}]]</td>
+                <td>
+                    <a th:href="${'/item/' + item.id}" href="#" role="button" class="edit-item bi bi-pencil fs-5"></a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span role="button" class="remove-item bi bi-trash fs-5"></span>
+                </td>
+            </tr>
+        </th:block>
         </tbody>
     </table>
-    <a href="/item" id="add-item" type="button" class="btn btn-light">Создать деталь</a>
+    <button id="add-item" type="button" class="btn btn-light">Создать деталь</button>
+    <button id="save-test-item" type="button" class="btn btn-light">save test item</button>
+
+    <div class="modal fade" id="newItemModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Создание</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <input type="text" class="form-control" id="newItemNameInput" placeholder="Название">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="item-save" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Применить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="delWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Предупреждение!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" class="item-id-edit-modal">
+                    Вы действительно хотите удалить деталь "<span id="warning-item-name"></span>" ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="item-warning-apply" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Удалить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -26,25 +82,61 @@
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
         crossorigin="anonymous"></script>
 <script>
-    let rows = 0;
+    $("#add-item").click(function() {
+        $('#newItemModal #newItemNameInput').val('');
+        $('#newItemModal').modal('show');
+    });
 
-    function addRow() {
+    $("#item-save").click(function() {
+        sendJson("/save_item", {name: $("#newItemNameInput").val(), operations:[], workTasks: []});
+    });
 
-        let tr = document.createElement("tr");
-        let rowTh = document.createElement("th");
-        rowTh.innerText = ++rows;
-        let itemTd = document.createElement("td");
-        itemTd.innerText = "Введите название";
-        itemTd.setAttribute("contenteditable", "true");
+    $(".remove-item").click(function() {
+        $('#delWarningModal #warning-item-name').text('');
+        $('#delWarningModal #warning-item-name').text($(this).parent().parent().find(".item-name")[0].innerText);
+        $('#delWarningModal .item-id-edit-modal').val($(this).parent().parent().attr("item-id"));
+        $('#delWarningModal').modal('show');
 
-        tr.append(rowTh)
-        tr.append(itemTd)
+    });
 
-        $("#table-body").append(tr);
+    $("#item-warning-apply").click(function() {
+        sendData("/remove_item", "id="+$('#delWarningModal .item-id-edit-modal').val());
+    });
+
+    $("#save-test-item").click(function(){
+        sendJson("/save_test_item", {name: "test_1", count: 222/*, operations:[{name: "aaa", workNorm: 3, itemsPerMinute: 2.0}]*/}, function(){});
+    });
+
+    function sendJson(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify(data),
+            headers: {
+                //"Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            success: function(data) {
+                location.reload();
+            },
+            error: function(data) {
+            }
+        });
     }
 
-    $("#add-item").click(function() {
-        addRow();
-    });
+    function sendData(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'text',
+            data: data,
+            success: function(data) {
+                location.reload();
+            },
+            error: function(data) {
+            }
+        });
+    }
 </script>
 </html>

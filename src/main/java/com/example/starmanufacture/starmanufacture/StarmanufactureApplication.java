@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories("com.example.starmanufacture.starmanufacture.repositories")
-@EntityScan("com.example.starmanufacture.starmanufacture.models")
+@EntityScan("com.example.starmanufacture.starmanufacture.data.models")
 @SpringBootApplication
 public class StarmanufactureApplication {
 

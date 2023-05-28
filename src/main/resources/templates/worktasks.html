@@ -2,11 +2,11 @@
 <head>
     <title>Наряды</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
 <div class="container">
     <h1>Наряды</h1>
-    <button type="button" class="btn btn-primary mt-5">Сохранить</button>
     <table id="work-table" class="table">
         <thead>
         <tr>
@@ -14,12 +14,57 @@
             <th scope="col">Номер</th>
             <th scope="col">Дата</th>
             <th scope="col">Деталь</th>
+            <th scope="col">Действия</th>
         </tr>
         </thead>
         <tbody id="table-body">
+        <th:block th:each="task, iStat : ${workTasks}">
+            <tr th:item-id="${task.id}">
+                <td>[[${iStat.index+1}]]</td>
+                <td class="task-number">[[${task.number}]]</td>
+                <td class="task-Date">[[${task.date}]]</td>
+                <td class="task-item">[[${task.item.name}]]</td>
+                <td>
+                    <a th:href="${'/worktask/' + task.id}" href="#" role="button" class="edit-task bi bi-pencil fs-5"></a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <span role="button" class="remove-task bi bi-trash fs-5"></span>
+                </td>
+            </tr>
+        </th:block>
         </tbody>
     </table>
-    <a href="/new_task" id="add-task" type="button" class="btn btn-light">Создать наряд</a>
+    <button id="add-task" type="button" class="btn btn-light">Создать наряд</button>
+
+    <div class="modal fade" id="newTaskModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Создание</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="newTaskNumberInput" class="form-label">Номер:</label>
+                        <input type="text" class="form-control" id="newTaskNumberInput" placeholder="">
+                        <label for="newTaskDateInput" class="form-label">Дата:</label>
+                        <input type="text" class="form-control" id="newTaskDateInput" placeholder="yyyy-mm-dd">
+                        <label for="select-item" class="form-label">Деталь:</label>
+                        <select id="select-item" class="form-select form-select">
+                            <option selected>Выберите деталь</option>
+                            <option th:each="item, iStat : ${itemsList}" th:value="${item.id}">[[${item.name}]]</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button id="worktask-save" type="button" class="btn btn-primary">
+                        <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
+                        <span>Применить</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -27,4 +72,38 @@
         src="https://code.jquery.com/jquery-3.7.0.min.js"
         integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
         crossorigin="anonymous"></script>
+
+<script>
+    $("#add-task").click(function(){
+        $("#newTaskModal").modal("show");
+    });
+
+    $("#worktask-save").click(function(){
+        sendJson("/save_worktask", {
+            number: $("#newTaskNumberInput").val(),
+            date: $("#newTaskDateInput").val(),
+            itemId: parseInt($("#select-item").val())
+        });
+        $("#newTaskModal").modal("hide");
+    });
+
+    function sendJson(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify(data),
+            headers: {
+                //"Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                console.log(data)
+            }
+        });
+    }
+</script>
 </html>
