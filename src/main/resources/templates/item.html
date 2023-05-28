@@ -110,7 +110,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    <button id="operation-warning-apply" type="button" class="btn btn-primary">
+                    <button id="operation-warning-apply" type="button" class="btn btn-primary" data-bs-dismiss="modal">
                         <span class="spinner-grow spinner-grow-sm d-none" role="status" aria-hidden="true"></span>
                         <span>Удалить</span></button>
                 </div>
@@ -248,7 +248,9 @@
                 location.reload();
             },
             error: function(data){
-                console.log(data)
+                let responseText = JSON.parse(data.responseText);
+                $("#errorModal .error-text").text("Status: "+responseText.status+", Error: "+responseText.error);
+                $("#errorModal").modal("show");
             }
         });
     }
