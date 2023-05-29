@@ -3,6 +3,7 @@ package com.example.starmanufacture.starmanufacture.controllers;
 import com.example.starmanufacture.starmanufacture.data.models.WorkTask;
 import com.example.starmanufacture.starmanufacture.data.models.WorkTaskEntry;
 import com.example.starmanufacture.starmanufacture.services.ItemService;
+import com.example.starmanufacture.starmanufacture.services.WorkShiftService;
 import com.example.starmanufacture.starmanufacture.services.WorkTaskService;
 import com.example.starmanufacture.starmanufacture.services.WorkerService;;
 import org.springframework.stereotype.Controller;
@@ -17,15 +18,18 @@ public class PageController {
     private final WorkerService workerService;
     private final ItemService itemService;
     private final WorkTaskService workTaskService;
+    private final WorkShiftService workShiftService;
 
-    public PageController(WorkerService workerService, ItemService itemService, WorkTaskService workTaskService) {
+    public PageController(WorkerService workerService, ItemService itemService, WorkTaskService workTaskService, WorkShiftService workShiftService) {
         this.workerService = workerService;
         this.itemService = itemService;
         this.workTaskService = workTaskService;
+        this.workShiftService = workShiftService;
     }
 
     @GetMapping("/")
     String homePage(Model model) {
+        model.addAttribute("currentWorkShift", workShiftService.getFirstWorkShift());
         return "index";
     }
 
