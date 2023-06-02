@@ -18,17 +18,13 @@ public class WorkShift {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
-    private String status;
-
     @OneToMany(mappedBy="workshift", cascade = CascadeType.ALL)
     @JsonManagedReference
     @JsonIgnore
     private Set<WorkShiftEntry> workShiftEntryes;
 
-    public WorkShift(LocalDate date, String status) {
+    public WorkShift(LocalDate date) {
         this.date = date;
-        this.status = status;
     }
 
     public WorkShift(){}
@@ -47,13 +43,5 @@ public class WorkShift {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 }

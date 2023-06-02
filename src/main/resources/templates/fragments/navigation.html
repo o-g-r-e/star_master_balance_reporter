@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<body>
+<ul th:fragment="navigationFragmentWsContext(workShiftId)" class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" th:href="${'/workshifts/' + workShiftId}">Смена</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" th:href="${'/workshifts/'+ workShiftId + '/select_worker'}">Рабочие</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/data">База</a>
+    </li>
+</ul>
+
+<ul th:fragment="navigationFragment" class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="/">Смена</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/workshifts/select_worker">Рабочие</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/data">База</a>
+    </li>
+</ul>
+
+<ul th:fragment="disabledNavigationFragment" class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" href="/">Смена</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link disabled" href="#">Рабочие</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/data">База</a>
+    </li>
+</ul>
+</body>
+</html>

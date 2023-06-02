@@ -51,7 +51,7 @@ public class ItemController {
         Item item = itemService.getItemById(id);
         model.addAttribute("currentItem", item);
         model.addAttribute("byOpId", Comparator.comparing(Operation::getId));
-        return "item";
+        return "data/item";
     }
 
     @PostMapping(path="/items/{id}")

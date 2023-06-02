@@ -13,15 +13,15 @@ public class WorkShiftService {
         this.workShiftRepository = workShiftRepository;
     }
 
-    public WorkShift getFirstWorkShift() {
-        return workShiftRepository.findFirstByOrderById();
+    public WorkShift getLasOpenWorkShift() {
+        return workShiftRepository.getLastOpenWorkshift();
     }
 
-    public void saveWorkShift(WorkShift workShift) {
-        workShiftRepository.save(workShift);
+    public WorkShift saveWorkShift(WorkShift workShift) {
+        return workShiftRepository.save(workShift);
     }
 
-    public void deleteWorkShift(Integer id) {
-        workShiftRepository.deleteById(id);
+    public WorkShift getWorkShiftById(Integer id) {
+        return workShiftRepository.findById(id).get();
     }
 }

@@ -22,6 +22,10 @@ public class WorkShiftEntry {
     private String workTaskNumber;
 
     @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne
     @JoinColumn(name = "operation_id")
     private Operation operation;
 
@@ -76,5 +80,13 @@ public class WorkShiftEntry {
 
     public void setWorkshift(WorkShift workshift) {
         this.workshift = workshift;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 }

@@ -5,66 +5,31 @@
 </head>
 <body>
     <div class="container">
+        <ul th:replace="~{fragments/navigation :: disabledNavigationFragment}"></ul>
+
         <div class="row align-items-center mt-2">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Специалисты</h5>
-                        <p class="card-text">Таблица специалистов</p>
-                        <a href="/workers" class="btn btn-primary">Перейти в таблицу</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Детали</h5>
-                        <p class="card-text">Таблица деталей</p>
-                        <a href="/items" class="btn btn-primary">Перейти в таблицу</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Наряды</h5>
-                        <p class="card-text">Таблица нарядов</p>
-                        <a href="/worktasks" class="btn btn-primary">Перейти в таблицу</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <th:block th:if="${currentWorkShift != null}">
-            <h1>Текущая смена [[${currentWorkShift.date}]]</h1>
-            <input type="hidden" id="workshift-id" th:value="${currentWorkShift.id}">
-            <button type="button" class="btn btn-primary" id="delete-workshift">Удалить смену</button>
-        </th:block>
-
-        <th:block th:if="${currentWorkShift == null}">
-            <div class="row align-items-center mt-2">
-                <div class="col"></div>
-                <div class="col">
-                    <form class="mt-5">
-                        <div class="row">
-                            <label for="new-workshift-date" class="col-auto col-form-label">Дата:</label>
-                            <div class="col-auto">
+            <div class="col"></div>
+            <div class="col">
+                <form class="mt-5">
+                    <div class="row">
+                        <label for="new-workshift-date" class="col-auto col-form-label">Дата:</label>
+                        <div class="col-auto">
                             <div class="input-group">
-                                <input type="text" id="new-workshift-date" class="form-control">
+                                <input type="text" id="new-workshift-date" class="form-control" disabled>
                                 <button class="btn btn-outline-secondary" id="sub-date">-</button>
                                 <button class="btn btn-outline-secondary" id="add-date">+</button>
                             </div>
-                            </div>
                         </div>
-                        <div class="row mt-3">
-                            <button type="button" class="col-auto btn btn-primary" id="start-workshift">Начать смену</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="col"></div>
+                    </div>
+                    <div class="row mt-3">
+                        <button type="button" class="col-auto btn btn-primary" id="start-workshift">Начать смену</button>
+                    </div>
+                </form>
             </div>
-        </th:block>
+            <div class="col"></div>
+        </div>
     </div>
+
     <div class="modal fade" id="delWarningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -120,15 +85,28 @@
     });
 
     $("#start-workshift").click(function(){
-        sendJson("/save_workshift", {date: date, status: "open"}, function(){});
+        $.ajax({
+            url: "/workshifts/save",
+            method: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify({date}),
+            headers: {
+                //"Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            success: function(data){
+                window.location.replace("/");
+            },
+            error: function(data){
+                console.log("error response");
+            },
+            complete: function(data){
+            }
+        });
     });
 
     $("#delete-workshift").click(function(){
         $("#delWarningModal").modal("show");
-    });
-
-    $("#apply-delete-workshift").click(function(){
-        sendData("/delete_workshift", "id="+$('#workshift-id').val());
     });
 
     function sendJson(url, data, onSuccess) {
@@ -138,17 +116,20 @@
             dataType: 'JSON',
             data: JSON.stringify(data),
             headers: {
-                //"Accept": "application/json",
+                "Accept": "application/json",
                 "Content-Type": "application/json"
             },
             success: function(data){
-                location.reload();
+                //location.reload();
+                console.log(data)
             },
             error: function(data){
+                console.log(data)
             },
-            complete: function(){
+            complete: function(data){
+                console.log(data)
                 onSuccess();
-                location.reload();
+                //location.reload();
             }
         });
     }
@@ -160,7 +141,7 @@
             dataType: 'text',
             data: data,
             success: function(data){
-                location.reload();
+                //location.reload();
             },
             error: function(data){
                 let responseText = JSON.parse(data.responseText);

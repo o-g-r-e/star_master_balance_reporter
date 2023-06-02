@@ -1,16 +1,15 @@
 package com.example.starmanufacture.starmanufacture.controllers;
 
-import com.example.starmanufacture.starmanufacture.data.models.WorkTask;
-import com.example.starmanufacture.starmanufacture.data.models.WorkTaskEntry;
-import com.example.starmanufacture.starmanufacture.services.ItemService;
-import com.example.starmanufacture.starmanufacture.services.WorkShiftService;
-import com.example.starmanufacture.starmanufacture.services.WorkTaskService;
-import com.example.starmanufacture.starmanufacture.services.WorkerService;;
+import com.example.starmanufacture.starmanufacture.data.models.*;
+import com.example.starmanufacture.starmanufacture.services.*;
+;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PageController {
@@ -19,30 +18,31 @@ public class PageController {
     private final ItemService itemService;
     private final WorkTaskService workTaskService;
     private final WorkShiftService workShiftService;
+    private final WorkShiftEntryService workShiftEntryService;
 
-    public PageController(WorkerService workerService, ItemService itemService, WorkTaskService workTaskService, WorkShiftService workShiftService) {
+    public PageController(WorkerService workerService, ItemService itemService, WorkTaskService workTaskService, WorkShiftService workShiftService, WorkShiftEntryService workShiftEntryService) {
         this.workerService = workerService;
         this.itemService = itemService;
         this.workTaskService = workTaskService;
         this.workShiftService = workShiftService;
+        this.workShiftEntryService = workShiftEntryService;
     }
 
     @GetMapping("/")
-    String homePage(Model model) {
-        model.addAttribute("currentWorkShift", workShiftService.getFirstWorkShift());
-        return "index";
-    }
+    String homePage(Model model, @CookieValue(name = "workshift_id", required = false) String workshiftId) {
+        if (workshiftId != null && !"".equals(workshiftId)) {
+            Integer wsId = Integer.valueOf(workshiftId);
+            WorkShift currentWorkShift = workShiftService.getWorkShiftById(wsId);
+            model.addAttribute("currentWorkShift", currentWorkShift);
 
-    @GetMapping("/workers")
-    String workersPage(Model model) {
-        model.addAttribute("workersList", workerService.getAllWorkers());
-        return "workers";
-    }
+            Map<Worker, List<WorkShiftEntry>> workersEntryesMap = workShiftEntryService.getAllEntryesGroupByWorker(wsId);
 
-    @GetMapping("/items")
-    String itemsPage(Model model) {
-        model.addAttribute("itemsList", itemService.getAllItems());
-        return "items";
+            model.addAttribute("workersEntryesMap", workersEntryesMap);
+
+            return "workshift";
+        }
+
+        return "workshift_creation";
     }
 
     @GetMapping("/worktasks")
@@ -51,6 +51,8 @@ public class PageController {
         model.addAttribute("workTasks", workTaskService.getAllTasks());
         return "worktasks";
     }
+
+
 
     @GetMapping("/worktask/{id}")
     String newtaskPage(@PathVariable Integer id, Model model) {

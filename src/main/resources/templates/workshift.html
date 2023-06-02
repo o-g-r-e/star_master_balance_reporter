@@ -1,0 +1,151 @@
+<html>
+<head>
+    <title>Помошник мастера</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-md">
+        <ul th:replace="~{fragments/navigation :: navigationFragment}"></ul>
+
+        <input type="hidden" id="workshift-id" th:value="${currentWorkShift.id}">
+        <div class="row mt-3">
+            <div class="col-auto">
+                <h1>Текущая смена [[${currentWorkShift.date}]]</h1>
+            </div>
+            <div class="col-auto d-flex align-items-center">
+                <button class="btn btn-secondary form-control" id="close-workshift">Закрыть смену</button>
+            </div>
+        </div>
+        <th:block th:each="item : ${workersEntryesMap}">
+            <h2 class="mt-5">[[${item.key.fullName}]]</h2>
+                <table id="work-table" class="table mt-3">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">№ Наряда</th>
+                        <th scope="col">Деталь</th>
+                        <th scope="col">Операция</th>
+                        <th scope="col">Норма кол-во</th>
+                        <th scope="col">Норма мин./шт.</th>
+                        <th scope="col">Изготовлено</th>
+                        <th scope="col">Калькуляция времени</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    <th:block th:each="entry, iStat : ${item.value}">
+                        <tr>
+                            <td>[[${iStat.index+1}]]</td>
+                            <td>[[${entry.workTaskNumber}]]</td>
+                            <td>[[${entry.item.name}]]</td>
+                            <td>[[${entry.operation.name}]]</td>
+                            <td>[[${entry.operation.workNorm}]]</td>
+                            <td>[[${entry.operation.itemsPerMinute}]]</td>
+                            <td>[[${entry.operationItemsCount}]]</td>
+                            <td>[[${#numbers.formatDecimal(entry.operationItemsCount * entry.operation.itemsPerMinute, 0, 1, 'POINT')}]]</td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <th>Всего изготовлено: [[${#aggregates.sum(item.value.![operationItemsCount])}]]</th>
+                        <th>Всего времени: [[${#aggregates.sum(item.value.![operationItemsCount * operation.itemsPerMinute])}]]</th>
+                    </tr>
+                    </tfoot>
+                </table>
+        </th:block>
+    </div>
+    <div th:replace="~{fragments/errorModal :: errorModalFragment}"></div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+        crossorigin="anonymous"></script>
+<script>
+    function formatDate(date) {
+        let month = date.getMonth()+1;
+        month = month<10?"0"+month:month;
+        let day = date.getDate();
+        day = day<10?"0"+day:day;
+
+        return date.getFullYear()+"."+month+"."+day;
+    }
+    let date = new Date();
+    let formattedDate = formatDate(date);
+
+    $("#new-workshift-date").val(formattedDate);
+
+    $("#sub-date").click(function(e){
+        e.preventDefault();
+
+        date.setDate(date.getDate()-1);
+        $("#new-workshift-date").val(formatDate(date));
+    });
+
+    $("#add-date").click(function(e){
+        e.preventDefault();
+
+        date.setDate(date.getDate()+1);
+        $("#new-workshift-date").val(formatDate(date));
+    });
+
+    $("#close-workshift").click(function(){
+        $.ajax({
+            url: "/workshifts/close",
+            method: 'POST',
+            dataType: 'TEXT',
+            success: function(data){
+                window.location.replace("/");
+            },
+            error: function(data){
+                console.log("error response");
+            }
+        });
+    });
+
+    function sendJson(url, data, onSuccess) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'JSON',
+            data: JSON.stringify(data),
+            headers: {
+                //"Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+            },
+            complete: function(){
+                onSuccess();
+                location.reload();
+            }
+        });
+    }
+
+    function sendData(url, data) {
+        $.ajax({
+            url: url,
+            method: 'POST',
+            dataType: 'text',
+            data: data,
+            success: function(data){
+                location.reload();
+            },
+            error: function(data){
+                let responseText = JSON.parse(data.responseText);
+                $("#errorModal .error-text").text("Status: "+responseText.status+", Error: "+responseText.error);
+                $("#errorModal").modal("show");
+            }
+        });
+    }
+</script>
+</html>
