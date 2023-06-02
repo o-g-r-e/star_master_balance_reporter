@@ -1,6 +1,7 @@
 <html>
 <head>
     <title>Помошник мастера</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
@@ -21,24 +22,22 @@
                 <table id="work-table" class="table mt-3">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">№ Наряда</th>
                         <th scope="col">Деталь</th>
                         <th scope="col">Операция</th>
-                        <th scope="col">Норма кол-во</th>
-                        <th scope="col">Норма мин./шт.</th>
-                        <th scope="col">Изготовлено</th>
-                        <th scope="col">Калькуляция времени</th>
+                        <!--<th scope="col">Норма кол-во</th>-->
+                        <th scope="col">мин./шт.</th>
+                        <th scope="col">Изг.</th>
+                        <th scope="col">Вр.</th>
                     </tr>
                     </thead>
                     <tbody id="table-body">
-                    <th:block th:each="entry, iStat : ${item.value}">
+                    <th:block th:each="entry : ${item.value}">
                         <tr>
-                            <td>[[${iStat.index+1}]]</td>
                             <td>[[${entry.workTaskNumber}]]</td>
                             <td>[[${entry.item.name}]]</td>
                             <td>[[${entry.operation.name}]]</td>
-                            <td>[[${entry.operation.workNorm}]]</td>
+                            <!--<td>[[${entry.operation.workNorm}]]</td>-->
                             <td>[[${entry.operation.itemsPerMinute}]]</td>
                             <td>[[${entry.operationItemsCount}]]</td>
                             <td>[[${#numbers.formatDecimal(entry.operationItemsCount * entry.operation.itemsPerMinute, 0, 1, 'POINT')}]]</td>
@@ -51,10 +50,8 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <th>Всего изготовлено: [[${#aggregates.sum(item.value.![operationItemsCount])}]]</th>
-                        <th>Всего времени: [[${#aggregates.sum(item.value.![operationItemsCount * operation.itemsPerMinute])}]]</th>
+                        <th>[[${#aggregates.sum(item.value.![operationItemsCount])}]]</th>
+                        <th>[[${#numbers.formatDecimal(#aggregates.sum(item.value.![operationItemsCount * operation.itemsPerMinute]), 0, 1, 'POINT')}]]</th>
                     </tr>
                     </tfoot>
                 </table>
