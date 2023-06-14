@@ -1,7 +1,7 @@
-package com.example.starmanufacture.starmanufacture.services;
+package com.newtechmat.starbalancer.services;
 
-import com.example.starmanufacture.starmanufacture.data.models.WorkTask;
-import com.example.starmanufacture.starmanufacture.repositories.WorkTaskRepository;
+import com.newtechmat.starbalancer.data.models.WorkTask;
+import com.newtechmat.starbalancer.repositories.WorkTaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

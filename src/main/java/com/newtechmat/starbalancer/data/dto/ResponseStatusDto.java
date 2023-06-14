@@ -1,4 +1,4 @@
-package com.example.starmanufacture.starmanufacture.data.dto;
+package com.newtechmat.starbalancer.data.dto;
 
 public class ResponseStatusDto {
     private Boolean status;

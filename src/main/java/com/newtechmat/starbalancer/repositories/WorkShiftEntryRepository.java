@@ -1,7 +1,7 @@
-package com.example.starmanufacture.starmanufacture.repositories;
+package com.newtechmat.starbalancer.repositories;
 
-import com.example.starmanufacture.starmanufacture.data.models.WorkShift;
-import com.example.starmanufacture.starmanufacture.data.models.WorkShiftEntry;
+import com.newtechmat.starbalancer.data.models.WorkShift;
+import com.newtechmat.starbalancer.data.models.WorkShiftEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

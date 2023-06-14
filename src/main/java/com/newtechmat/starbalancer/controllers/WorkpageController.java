@@ -1,9 +1,9 @@
-package com.example.starmanufacture.starmanufacture.controllers;
+package com.newtechmat.starbalancer.controllers;
 
-import com.example.starmanufacture.starmanufacture.data.dto.ResponseStatusDto;
-import com.example.starmanufacture.starmanufacture.data.dto.WorkShiftEntryDto;
-import com.example.starmanufacture.starmanufacture.data.models.*;
-import com.example.starmanufacture.starmanufacture.services.*;
+import com.newtechmat.starbalancer.data.dto.ResponseStatusDto;
+import com.newtechmat.starbalancer.data.dto.WorkShiftEntryDto;
+import com.newtechmat.starbalancer.data.models.*;
+import com.newtechmat.starbalancer.services.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

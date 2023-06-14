@@ -1,10 +1,10 @@
-package com.example.starmanufacture.starmanufacture.services;
+package com.newtechmat.starbalancer.services;
 
-import com.example.starmanufacture.starmanufacture.data.models.Item;
-import com.example.starmanufacture.starmanufacture.data.models.Operation;
-import com.example.starmanufacture.starmanufacture.data.models.WorkShiftEntry;
-import com.example.starmanufacture.starmanufacture.data.models.Worker;
-import com.example.starmanufacture.starmanufacture.repositories.WorkShiftEntryRepository;
+import com.newtechmat.starbalancer.data.models.Item;
+import com.newtechmat.starbalancer.data.models.Operation;
+import com.newtechmat.starbalancer.data.models.WorkShiftEntry;
+import com.newtechmat.starbalancer.data.models.Worker;
+import com.newtechmat.starbalancer.repositories.WorkShiftEntryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

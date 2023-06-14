@@ -1,7 +1,7 @@
-package com.example.starmanufacture.starmanufacture.services;
+package com.newtechmat.starbalancer.services;
 
-import com.example.starmanufacture.starmanufacture.data.models.WorkShift;
-import com.example.starmanufacture.starmanufacture.repositories.WorkShiftRepository;
+import com.newtechmat.starbalancer.data.models.WorkShift;
+import com.newtechmat.starbalancer.repositories.WorkShiftRepository;
 import org.springframework.stereotype.Service;
 
 @Service

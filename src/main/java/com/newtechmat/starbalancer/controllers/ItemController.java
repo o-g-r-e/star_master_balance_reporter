@@ -1,10 +1,10 @@
-package com.example.starmanufacture.starmanufacture.controllers;
+package com.newtechmat.starbalancer.controllers;
 
-import com.example.starmanufacture.starmanufacture.data.dto.ItemUpdateDto;
-import com.example.starmanufacture.starmanufacture.data.models.Item;
-import com.example.starmanufacture.starmanufacture.data.models.Operation;
-import com.example.starmanufacture.starmanufacture.services.ItemService;
-import com.example.starmanufacture.starmanufacture.services.OperationService;
+import com.newtechmat.starbalancer.data.dto.ItemUpdateDto;
+import com.newtechmat.starbalancer.data.models.Item;
+import com.newtechmat.starbalancer.data.models.Operation;
+import com.newtechmat.starbalancer.services.ItemService;
+import com.newtechmat.starbalancer.services.OperationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -1,4 +1,4 @@
-package com.example.starmanufacture.starmanufacture.data.models;
+package com.newtechmat.starbalancer.data.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;

@@ -1,8 +1,8 @@
-package com.example.starmanufacture.starmanufacture.controllers;
+package com.newtechmat.starbalancer.controllers;
 
-import com.example.starmanufacture.starmanufacture.data.dto.WorkShiftEntryDto;
-import com.example.starmanufacture.starmanufacture.data.models.*;
-import com.example.starmanufacture.starmanufacture.services.*;
+import com.newtechmat.starbalancer.data.dto.WorkShiftEntryDto;
+import com.newtechmat.starbalancer.data.models.*;
+import com.newtechmat.starbalancer.services.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;

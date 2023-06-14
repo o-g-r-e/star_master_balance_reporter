@@ -1,7 +1,7 @@
-package com.example.starmanufacture.starmanufacture.services;
+package com.newtechmat.starbalancer.services;
 
-import com.example.starmanufacture.starmanufacture.data.models.Item;
-import com.example.starmanufacture.starmanufacture.repositories.ItemRepository;
+import com.newtechmat.starbalancer.data.models.Item;
+import com.newtechmat.starbalancer.repositories.ItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

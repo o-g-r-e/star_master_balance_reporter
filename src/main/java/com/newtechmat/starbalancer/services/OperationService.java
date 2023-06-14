@@ -1,7 +1,7 @@
-package com.example.starmanufacture.starmanufacture.services;
+package com.newtechmat.starbalancer.services;
 
-import com.example.starmanufacture.starmanufacture.data.models.Operation;
-import com.example.starmanufacture.starmanufacture.repositories.OperationRepository;
+import com.newtechmat.starbalancer.data.models.Operation;
+import com.newtechmat.starbalancer.repositories.OperationRepository;
 import org.springframework.stereotype.Service;
 
 @Service

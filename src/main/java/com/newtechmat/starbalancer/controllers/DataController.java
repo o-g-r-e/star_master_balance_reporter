@@ -1,9 +1,9 @@
-package com.example.starmanufacture.starmanufacture.controllers;
+package com.newtechmat.starbalancer.controllers;
 
-import com.example.starmanufacture.starmanufacture.data.models.WorkShift;
-import com.example.starmanufacture.starmanufacture.services.ItemService;
-import com.example.starmanufacture.starmanufacture.services.WorkShiftService;
-import com.example.starmanufacture.starmanufacture.services.WorkerService;
+import com.newtechmat.starbalancer.data.models.WorkShift;
+import com.newtechmat.starbalancer.services.ItemService;
+import com.newtechmat.starbalancer.services.WorkShiftService;
+import com.newtechmat.starbalancer.services.WorkerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;

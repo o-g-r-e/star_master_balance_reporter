@@ -1,7 +1,7 @@
-package com.example.starmanufacture.starmanufacture.controllers;
+package com.newtechmat.starbalancer.controllers;
 
-import com.example.starmanufacture.starmanufacture.data.models.Worker;
-import com.example.starmanufacture.starmanufacture.services.WorkerService;
+import com.newtechmat.starbalancer.data.models.Worker;
+import com.newtechmat.starbalancer.services.WorkerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

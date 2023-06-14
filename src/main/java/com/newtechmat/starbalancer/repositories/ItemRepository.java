@@ -1,6 +1,6 @@
-package com.example.starmanufacture.starmanufacture.repositories;
+package com.newtechmat.starbalancer.repositories;
 
-import com.example.starmanufacture.starmanufacture.data.models.Item;
+import com.newtechmat.starbalancer.data.models.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

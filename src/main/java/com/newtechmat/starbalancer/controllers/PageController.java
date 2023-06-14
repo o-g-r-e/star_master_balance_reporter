@@ -1,7 +1,7 @@
-package com.example.starmanufacture.starmanufacture.controllers;
+package com.newtechmat.starbalancer.controllers;
 
-import com.example.starmanufacture.starmanufacture.data.models.*;
-import com.example.starmanufacture.starmanufacture.services.*;
+import com.newtechmat.starbalancer.data.models.*;
+import com.newtechmat.starbalancer.services.*;
 ;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
