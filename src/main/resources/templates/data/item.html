@@ -7,21 +7,24 @@
 </head>
 <body>
 <div class="container">
-    <nav aria-label="breadcrumb">
+    <ul th:replace="~{fragments/navigation :: navigationFragment}"></ul>
+    <nav class="mt-3" aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Главная</a></li>
-            <li class="breadcrumb-item"><a href="/items">Детали</a></li>
+            <li class="breadcrumb-item"><a href="/data/items">Детали</a></li>
+            <li class="breadcrumb-item" th:text="${currentItem.name}"></li>
         </ol>
     </nav>
     <h1>Деталь</h1>
     <form class="mt-3">
         <div class="row">
             <legend class="col-auto col-form-label" for="item-name">Название:</legend>
-            <div class="col-2">
+            <div class="col-4 col-md-2">
                 <input class="form-control" id="item-name" type="text" th:value="${currentItem.name}">
                 <div class="invalid-feedback">Необходимо ввести название детали</div>
             </div>
-            <div class="col-auto"><button id="save-button" type="button" class="btn btn-primary">Сохранить изменения</button></div>
+            <div class="col-12 col-md-auto mt-2 mt-md-0">
+                <button id="save-button" type="button" class="btn btn-primary">Сохранить изменения</button>
+            </div>
         </div>
     </form>
     <h3 class="mt-3">Операции</h3>

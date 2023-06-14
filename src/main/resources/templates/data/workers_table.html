@@ -7,11 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Главная</a></li>
-            </ol>
-        </nav>
+        <ul th:replace="~{fragments/navigation :: navigationFragment}"></ul>
         <h1>Рабочие</h1>
         <table id="work-table" class="table mt-3">
             <thead>
