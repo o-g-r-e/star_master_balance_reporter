@@ -66,6 +66,12 @@ public class WorkShiftEntryService {
         return workShiftEntries.stream().collect(Collectors.groupingBy(WorkShiftEntry::getWorker));
     }
 
+    public Map<Operation, List<WorkShiftEntry>> getAllEntryesGroupByOperation(Integer workShiftId) {
+        List<WorkShiftEntry> workShiftEntries =  workShiftEntryRepository.findByWorkshiftId(workShiftId);
+
+        return workShiftEntries.stream().collect(Collectors.groupingBy(WorkShiftEntry::getOperation));
+    }
+
     public void deleteEntryById(Integer id) {
         workShiftEntryRepository.deleteById(id);
     }

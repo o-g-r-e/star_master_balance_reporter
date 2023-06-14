@@ -35,9 +35,9 @@ public class PageController {
             WorkShift currentWorkShift = workShiftService.getWorkShiftById(wsId);
             model.addAttribute("currentWorkShift", currentWorkShift);
 
-            Map<Worker, List<WorkShiftEntry>> workersEntryesMap = workShiftEntryService.getAllEntryesGroupByWorker(wsId);
+            Map<Operation, List<WorkShiftEntry>> workersEntryesMap = workShiftEntryService.getAllEntryesGroupByOperation(wsId);
 
-            model.addAttribute("workersEntryesMap", workersEntryesMap);
+            model.addAttribute("operationsMap", workersEntryesMap);
 
             return "workshift";
         }

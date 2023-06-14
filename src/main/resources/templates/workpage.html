@@ -25,11 +25,11 @@
                     <div class="col-12 text-center h3" th:text="${operation.key.name}"></div>
                 </div>
                 <form class="row mt-3">
-                    <div class="col-6 col-md-2">
+                    <!--<div class="col-4 col-md-2">
                         <label class="form-label">№ Наряда</label>
-                    </div>
+                    </div>-->
 
-                    <div class="col-6 col-md-2">
+                    <div class="col-4 col-md-2">
                         <label class="form-label">Кол-во</label>
                     </div>
                 </form>
@@ -40,12 +40,16 @@
                         <input type="hidden" class="item-id-input" th:value="${item.key.id}">
                         <input type="hidden" class="operation-id-input" th:value="${operation.key.id}">
 
-                        <div class="col-6 col-md-2">
-                            <input type="text" class="form-control wt-number-input" th:value="${entry.workTaskNumber}" disabled>
+                        <div class="col-4 col-md-2 d-none">
+                            <span class="wt-number-input" th:text="${entry.workTaskNumber}"></span>
                         </div>
 
-                        <div class="col-6 col-md-2">
-                            <input type="text" class="form-control wt-items-count-input" th:value="${entry.operationItemsCount}" disabled>
+                        <div class="col-4 col-md-2">
+                            <span class="wt-items-count-input" th:text="${entry.operationItemsCount}"></span>
+                        </div>
+
+                        <div class="col-4 col-md-auto">
+                            <button class="btn btn-light edit-entry">Ред.</button>
                         </div>
                     </form>
                 </th:block>
@@ -55,9 +59,9 @@
                     <input type="hidden" class="operation-id-input" th:value="${operation.key.id}">
 
                     <div class="row">
-                        <div class="col-4 col-md-2">
+                        <!--<div class="col-4 col-md-2">
                             <label class="form-label">№ Наряда</label>
-                        </div>
+                        </div>-->
                         <div class="col-4 col-md-2">
                             <label class="form-label">Кол-во</label>
                         </div>
@@ -65,14 +69,14 @@
 
 
                     <div class="row">
-                        <div class="col-4 col-md-2">
-                            <input type="text" class="task-number-input form-control">
+                        <div class="col-4 col-md-2 d-none">
+                            <input type="text" value="0000" class="task-number-input form-control">
                         </div>
 
                         <div class="col-4 col-md-2">
                             <input type="text" class="items-count-input form-control">
                         </div>
-                        <div class="col-auto">
+                        <div class="col-4 col-md-auto">
                             <button class="btn btn-light send-entry">Добавить</button>
                         </div>
                     </div>
@@ -94,7 +98,7 @@
                             <input type="hidden" class="worker-id-input">
                             <input type="hidden" class="item-id-input">
                             <input type="hidden" class="operation-id-input">
-                            <div>
+                            <div class="d-none">
                                 <label for="editTakNumberInput" class="form-label">№ Наряда</label>
                                 <input type="text" class="form-control" id="editTakNumberInput" placeholder="">
                             </div>
@@ -122,16 +126,19 @@
 
 <script>
 
-    $(".entry-row").click(function(){
+    $(".edit-entry").click(function(e){
+        e.preventDefault();
         $("#editEntryModal").modal("show");
 
-        $("#editEntryModal #editTakNumberInput").val($(this).find(".wt-number-input").val());
-        $("#editEntryModal #editItemsCountInput").val($(this).find(".wt-items-count-input").val());
+        let entryForm = $(this).parent().parent();
 
-        $("#editEntryModal .entry-id-input").val($(this).find(".entry-id-input").val());
-        $("#editEntryModal .worker-id-input").val($(this).find(".worker-id-input").val());
-        $("#editEntryModal .item-id-input").val($(this).find(".item-id-input").val());
-        $("#editEntryModal .operation-id-input").val($(this).find(".operation-id-input").val());
+        $("#editEntryModal #editTakNumberInput").val(entryForm.find(".wt-number-input").text());
+        $("#editEntryModal #editItemsCountInput").val(entryForm.find(".wt-items-count-input").text());
+
+        $("#editEntryModal .entry-id-input").val(entryForm.find(".entry-id-input").val());
+        $("#editEntryModal .worker-id-input").val(entryForm.find(".worker-id-input").val());
+        $("#editEntryModal .item-id-input").val(entryForm.find(".item-id-input").val());
+        $("#editEntryModal .operation-id-input").val(entryForm.find(".operation-id-input").val());
     });
 
     $("#editEntryModal #saveEntry").click(function(){

@@ -17,43 +17,23 @@
                 <button class="btn btn-secondary form-control" id="close-workshift">Закрыть смену</button>
             </div>
         </div>
-        <th:block th:each="item : ${workersEntryesMap}">
-            <h2 class="mt-5">[[${item.key.fullName}]]</h2>
+        <th:block th:each="operation : ${operationsMap}">
+            <h2 class="mt-5">[[${operation.key.item.name}]], [[${operation.key.name}]], норма: [[${operation.key.workNorm}]]</h2>
                 <table id="work-table" class="table mt-3">
                     <thead>
                     <tr>
-                        <th scope="col">№ Наряда</th>
-                        <th scope="col">Деталь</th>
-                        <th scope="col">Операция</th>
-                        <!--<th scope="col">Норма кол-во</th>-->
-                        <th scope="col">мин./шт.</th>
-                        <th scope="col">Изг.</th>
-                        <th scope="col">Вр.</th>
+                        <th scope="col">Рабочий</th>
+                        <th scope="col">Кол-во</th>
                     </tr>
                     </thead>
                     <tbody id="table-body">
-                    <th:block th:each="entry : ${item.value}">
+                    <th:block th:each="entry : ${operation.value}">
                         <tr>
-                            <td>[[${entry.workTaskNumber}]]</td>
-                            <td>[[${entry.item.name}]]</td>
-                            <td>[[${entry.operation.name}]]</td>
-                            <!--<td>[[${entry.operation.workNorm}]]</td>-->
-                            <td>[[${entry.operation.itemsPerMinute}]]</td>
+                            <td>[[${entry.worker.fullName}]]</td>
                             <td>[[${entry.operationItemsCount}]]</td>
-                            <td>[[${#numbers.formatDecimal(entry.operationItemsCount * entry.operation.itemsPerMinute, 0, 1, 'POINT')}]]</td>
                         </tr>
                     </th:block>
                     </tbody>
-                    <tfoot>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <th>[[${#aggregates.sum(item.value.![operationItemsCount])}]]</th>
-                        <th>[[${#numbers.formatDecimal(#aggregates.sum(item.value.![operationItemsCount * operation.itemsPerMinute]), 0, 1, 'POINT')}]]</th>
-                    </tr>
-                    </tfoot>
                 </table>
         </th:block>
     </div>
